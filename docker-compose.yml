@@ -1,0 +1,35 @@
+version: '3'
+services:
+
+ php:
+  build: .
+  restart: always
+  environment:
+    - PSM_DB_PREFIX=monitor_
+    - PSM_DB_USER=db_user
+    - PSM_DB_PASS=db_pass
+    - PSM_DB_NAME=db_name
+    - PSM_DB_HOST=localhost
+  networks:
+   - backend
+   - world
+  depends_on:
+   - mysql_monitor
+
+ mysql_monitor:
+    image: mysql:5.7
+    environment:
+     - MYSQL_ROOT_PASSWORD=db_root_pass
+     - MYSQL_DATABASE=db_name
+     - MYSQL_USER=phpmonitor_usr
+     - MYSQL_PASSWORD=db_pass
+    volumes:
+     - db/:/var/lib/mysql
+    networks:
+     - backend
+    restart: always
+
+networks:
+  backend:
+  world:
+    external: true
